@@ -162,6 +162,20 @@ public class Recursion {
         int totalWays = fnm1 + pairWays;
         return totalWays;
     }
+
+    public static void printBinaryString(int n, int lastplace, String newStr){
+        //basecase
+        if(n == 0){
+            System.out.println(newStr);
+            return;
+        }
+
+        //kaam
+        printBinaryString(n-1, 0, newStr+'0');
+        if(lastplace == 0){
+            printBinaryString(n-1, 1, newStr+'1');
+        }
+    }
     public static void main(String args[]){
         int sorted[] = {1, 2, 5, 3, 4, 5, 6, 7, 8, 9};
         int i = 0;
@@ -173,6 +187,7 @@ public class Recursion {
         int idx = 0;
 
         // duplicateString(str, idx, new StringBuilder(""), map);
-        System.out.println(frndsPairing(n));
+        printBinaryString(10, 0, "");
+        // System.out.println(frndsPairing(n));
     }
 }

@@ -25,6 +25,12 @@ public class Trail {
         return totalWays;
     }
 
+    public static void printAry(int ary[]){
+        for(int i = 0; i < ary.length; i++){
+            System.out.println(ary[i]);
+        }
+    }
+
     public static void main(String[] args) {
         int n = 100;
         int ways = tilingProblem(n);
