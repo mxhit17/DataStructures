@@ -24,7 +24,7 @@ public class Recursion {
             return 1;
         }
 
-        int fnm1 = factorial(n - 1);
+        // int fnm1 = factorial(n - 1);
         int fn = n * factorial(n - 1);
         return fn;
     }
@@ -34,7 +34,7 @@ public class Recursion {
             return 0;
         }
 
-        int x = natSum(n - 1);
+        // int x = natSum(n - 1);
         int sum = n + natSum(n - 1);
         return sum;
 
@@ -100,6 +100,7 @@ public class Recursion {
     }
 
     public static int optimizedPow(int x, int n){
+        //TC = O(n)
         if(n == 0){
             return 1;
         }
@@ -111,6 +112,22 @@ public class Recursion {
             return res;
         }
         return halfPowerSq;
+    }
+
+    public static long optimizedPow2(int x, int n){
+        //TC = O(log n)
+        if(n == 0){
+            return 1;
+        }
+        long halfPowerSq = optimizedPow(x, n/2);
+        long power = halfPowerSq * halfPowerSq;
+
+        //if n is a odd number 
+        if(n % 2 != 0){
+            long res = power * x;
+            return res;
+        }
+        return power;
     }
 
     public static int tilingProblem(int n){ // floor size 2 * n
@@ -177,17 +194,19 @@ public class Recursion {
         }
     }
     public static void main(String args[]){
-        int sorted[] = {1, 2, 5, 3, 4, 5, 6, 7, 8, 9};
-        int i = 0;
-        int key = 5;
-        int x = 10;
-        int n = 3;
-        boolean map[] = new boolean[26];
-        String str = "appnnacollege";
-        int idx = 0;
+        // int sorted[] = {1, 2, 5, 3, 4, 5, 6, 7, 8, 9};
+        // int i = 0;
+        // int key = 5;
+        // int x = 10;
+        // int n = 3;
+        // boolean map[] = new boolean[26];
+        // String str = "appnnacollege";
+        // int idx = 0;
+
+
 
         // duplicateString(str, idx, new StringBuilder(""), map);
-        printBinaryString(10, 0, "");
+        // printBinaryString(10, 0, "");
         // System.out.println(frndsPairing(n));
     }
 }
