@@ -127,7 +127,7 @@ public class GraphProblems {
 
 
         // Has Path
-        // System.out.println(hasPath(graph, 0, 5, new boolean[V]));
+        System.out.println(hasPath(graph, 0, 5, new boolean[V]));
 
     }
 }
