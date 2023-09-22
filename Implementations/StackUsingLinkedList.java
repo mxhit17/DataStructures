@@ -11,14 +11,16 @@ public class StackUsingLinkedList {
 
     static Node head = null;
     static Node tail = null;
+    static int size = 0;
 
     static class Stack{
         public boolean isEmpty(){
-            return head == null;
+            return size == 0;
         }
 
         public void push(int data){
             Node newNode = new Node(data);
+            size++;
             if(isEmpty()){
                 head = tail = newNode;
             }
@@ -45,8 +47,9 @@ public class StackUsingLinkedList {
             }else{
                 Node tailP = tailPrev();
                 int temp = tail.data;
-                tail = null;
+                tailP.next = null;
                 tail = tailP;
+                size--;
                 return temp;
             }
         }
@@ -70,7 +73,11 @@ public class StackUsingLinkedList {
         s.push(3);
         s.push(4);
         s.push(10);
-        
+
+        while(!s.isEmpty()){
+            System.out.print(s.pop() + " ");
+        }
+
 
     }
 }
