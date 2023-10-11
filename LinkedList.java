@@ -417,7 +417,7 @@ public class LinkedList {
         }
     }
 
-    public static Node reverse(Node head, int k){//Reverse a Linked List in groups of given size
+    public Node reverse(Node head, int k){//Reverse a Linked List in groups of given size
         //Your code here
         Node prev = null;
         Node curr = head;
@@ -439,6 +439,15 @@ public class LinkedList {
 
         return prev;
     }
+
+    public void ins(Node head, int idx){ // Pracice method for minor
+        Node temp = head;
+        int cntIdx = 0;
+        while(cntIdx == idx){
+            temp = temp.next;
+        }
+
+    }
     
     public static void main(String args[]){
         LinkedList ll = new LinkedList();
@@ -450,8 +459,8 @@ public class LinkedList {
         ll.addLast(6);
         // System.out.println(ll.chkPalindrome());
         // ll.mergeSort(head);
-        ll.printLL();
-        ll.zigzag();
-        ll.printLL();
+        // ll.zigzag();
+        // ll.reverse(head, 3);
+        // ll.printLL();
     }
 }

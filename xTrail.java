@@ -1,36 +1,52 @@
-import java.util.Stack;
+public class xTrail{
+    static class Queue{
+        static class Node{
+            int data;
+            Node next;
 
-public class xTrail {
-    public static int findDifference(int[] arr) {
-        int min = arr[0];
-        int max = arr[0];
-        
-        for (int i = 1; i < arr.length; i++) {
-            if (arr[i] < min) {
-                min = arr[i];
-            }
-            if (arr[i] > max) {
-                max = arr[i];
+            public Node(int data){
+                this.data = data;
+                this.next = null;
             }
         }
-        
-        return max - min;
+
+        static int size = 0;
+        static Node head = null;
+        static Node tail = null;
+
+        public boolean isEmpty(){
+            return size == 0;
+        }
+
+        public void addLast(int data){
+            Node newNode = new Node(data);
+            if(size == 0){
+                head = tail = newNode;
+            }else{
+                tail.next = newNode;
+                tail = newNode;
+                newNode.next = null;
+            }
+            size++;
+        }
+
+        public int removeFirst(){
+            if(size == 0){
+                System.out.println("LL is empty");
+                return -1;
+            }else{
+                int temp = head.data;
+                head = head.next;
+                size--;
+                return temp;
+            }
+        }
+
     }
 
+    
     public static void main(String[] args) {
-        int[] arr = {5, 8, 3, 2, 9, 1, 7, 4, 6}; // Fixed array
-        Stack<Integer> s = new Stack<>();
-        s.push(2);
-        s.push(3);
-        s.push(4);
-        s.push(5);
-        s.push(6);
-
-        for(int i = 0; ; i++){
-            if(s.isEmpty()){
-                break;
-            }
-            System.out.println(s.pop());
-        }
+        Queue q = new Queue();
+        
     }
 }
