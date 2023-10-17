@@ -112,6 +112,81 @@ public class GraphProblems {
 
         return false;
     }
+
+    public static boolean dfsUtilC(ArrayList<Edge> graph[], boolean vis[], int curr, int par){
+        vis[curr] = true;
+        for(int i = 0; i < graph[curr].size(); i++){
+            Edge e = graph[curr].get(i);
+            // case - 3
+            if(!vis[e.dest]){
+                if(dfsUtilC(graph, vis, e.dest, curr)){
+                    return true;
+                }
+            }
+
+            // case - 1
+            if(vis[e.dest] && e.dest != par){
+                return true;
+            }
+
+            //case - 2 -> do nothing -> continue
+        }
+
+        return false;
+    }
+
+    public static boolean dfsC(ArrayList<Edge> graph[]){
+        boolean vis[] = new boolean[graph.length];
+
+        for(int i = 0; i < graph.length; i++){
+            if(!vis[i]){
+                if(dfsUtilC(graph, vis, i, -1)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean bfsBipartite(ArrayList<Edge> graph[]){
+        int color[] = new int[graph.length];
+        for(int i = 0; i < color.length; i++){
+            color[i] = -1;
+        }
+
+        Queue<Integer> q = new LinkedList<>();
+        // q.add(0);
+
+        for(int i = 0; i < graph.length; i++){
+            if(color[i] == -1){
+                q.add(i);
+                color[i] = 0;
+                while(!q.isEmpty()){
+                    int curr = q.remove();
+                    for(int j = 0; j < graph[curr].size(); j++){
+                        Edge e = graph[curr].get(j);
+                        // case - 1 -> neigh has no color
+                        if(color[e.dest] == -1){
+                            int nextCol = color[curr] == 0 ? 1 : 0;
+                            color[e.dest] = nextCol;
+                            q.add(e.dest);
+                        }
+
+                        // case - 2 neigh has different color -> continue
+                        // case - 3 neigh has same color
+                        if(color[e.dest] == color[curr]){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+
+    }
+
     public static void main(String[] args) {
         int V = 7;
         ArrayList<Edge>[] graph = new ArrayList[V]; // null -> empty ArrayList
@@ -127,7 +202,15 @@ public class GraphProblems {
 
 
         // Has Path
-        System.out.println(hasPath(graph, 0, 5, new boolean[V]));
+        // System.out.println(hasPath(graph, 0, 5, new boolean[V]));
+
+
+        // Cycle Detection
+        // System.out.println(dfsC(graph));
+
+
+        // Bipartite Graph
+        // System.out.println(bfsBipartite(graph));
 
     }
 }
