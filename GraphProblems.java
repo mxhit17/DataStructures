@@ -19,28 +19,51 @@ public class GraphProblems {
             graph[i] = new ArrayList<>();
         }
 
-        graph[0].add(new Edge(0, 1, 1));
-        graph[0].add(new Edge(0, 2, 1));
+        // Normal Graph
+        // graph[0].add(new Edge(0, 1, 1));
+        // graph[0].add(new Edge(0, 2, 1));
 
-        graph[1].add(new Edge(1, 0, 1));
-        graph[1].add(new Edge(1, 3, 1));
+        // graph[1].add(new Edge(1, 0, 1));
+        // graph[1].add(new Edge(1, 3, 1));
 
-        graph[2].add(new Edge(2, 0, 1));
-        graph[2].add(new Edge(2, 4, 1));
+        // graph[2].add(new Edge(2, 0, 1));
+        // graph[2].add(new Edge(2, 4, 1));
 
-        graph[3].add(new Edge(3, 1, 1));
-        graph[3].add(new Edge(3, 4, 1));
-        graph[3].add(new Edge(3, 5, 1));
+        // graph[3].add(new Edge(3, 1, 1));
+        // graph[3].add(new Edge(3, 4, 1));
+        // graph[3].add(new Edge(3, 5, 1));
 
-        graph[4].add(new Edge(4, 2, 1));
-        graph[4].add(new Edge(4, 3, 1));
-        graph[4].add(new Edge(4, 5, 1));
+        // graph[4].add(new Edge(4, 2, 1));
+        // graph[4].add(new Edge(4, 3, 1));
+        // graph[4].add(new Edge(4, 5, 1));
 
-        graph[5].add(new Edge(5, 3, 1));
-        graph[5].add(new Edge(5, 4, 1));
-        graph[5].add(new Edge(5, 6, 1));
+        // graph[5].add(new Edge(5, 3, 1));
+        // graph[5].add(new Edge(5, 4, 1));
+        // graph[5].add(new Edge(5, 6, 1));
 
-        graph[6].add(new Edge(6, 5, 1));
+        // graph[6].add(new Edge(6, 5, 1));
+
+
+        // Graph for Cycle Detection (Directed Graph)
+        // graph[0].add(new Edge(0, 2, 0));
+
+        // graph[1].add(new Edge(1, 0, 0));
+
+        // graph[2].add(new Edge(2, 3, 0));
+
+        // graph[3].add(new Edge(3, 0, 0));
+
+
+        // Graph for Topological Sort - DFS
+        graph[2].add(new Edge(2, 3, 0));
+
+        graph[3].add(new Edge(3, 1, 0));
+
+        graph[4].add(new Edge(4, 0, 0));
+        graph[4].add(new Edge(4, 1, 0));
+
+        graph[5].add(new Edge(5, 0, 0));
+        graph[5].add(new Edge(5, 2, 0));
     }
 
     public static void bfsUtil(ArrayList<Edge>[] graph, boolean vis[]){
@@ -174,6 +197,7 @@ public class GraphProblems {
                         }
 
                         // case - 2 neigh has different color -> continue
+                        
                         // case - 3 neigh has same color
                         if(color[e.dest] == color[curr]){
                             return false;
@@ -184,7 +208,69 @@ public class GraphProblems {
         }
 
         return true;
+    }
 
+    public static boolean isCycleDirectedGraphUtil(ArrayList<Edge> graph[], int curr, boolean vis[], boolean stack[]){
+        vis[curr] = true;
+        stack[curr] = true;
+
+        for(int i = 0; i < graph[curr].size(); i++){
+            Edge e = graph[curr].get(i);
+
+            if(stack[e.dest] == true){ // cycle exists
+                return true;
+            }
+
+            if(!vis[e.dest] && isCycleDirectedGraphUtil(graph, e.dest, vis, stack)){
+                return true;
+            }
+        }
+
+        stack[curr] = false;
+
+        return false;
+    }
+    public static boolean isCycleDirectedGraph(ArrayList<Edge> graph[]){
+        boolean vis[] = new boolean[graph.length];
+        boolean stack[] = new boolean[graph.length];
+
+        for(int i = 0; i < graph.length; i++){
+            if(!vis[i]){
+                if(isCycleDirectedGraphUtil(graph, i, vis, stack)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static void topologicalSortDFSUtil(ArrayList<Edge> graph[], int curr, boolean vis[], Stack<Integer> s){
+        vis[curr] = true;
+
+        for(int i = 0; i < graph[curr].size(); i++){
+            Edge e = graph[curr].get(i);
+            if(!vis[e.dest]){
+                topologicalSortDFSUtil(graph, e.dest, vis, s);
+            }
+        }
+
+        s.push(curr);
+    }
+
+    public static void topologicalSortDFS(ArrayList<Edge> graph[]){
+        boolean vis[] = new boolean[graph.length];
+        Stack<Integer> s = new Stack<>();
+
+        for(int i = 0; i < graph.length; i++){
+            if(!vis[i]){
+                topologicalSortDFSUtil(graph, i, vis, s);
+            }
+        }
+
+        while(!s.isEmpty()){
+            System.out.print(s.pop() + " ");
+        }
     }
 
     public static void main(String[] args) {
@@ -211,6 +297,16 @@ public class GraphProblems {
 
         // Bipartite Graph
         // System.out.println(bfsBipartite(graph));
+
+
+        // Cycle Detection - Directed Graphs
+        // System.out.println(isCycleDirectedGraph(graph));        // True
+
+
+        // Topological Sorting - using DFS
+        // topologicalSortDFS(graph);
+        
+
 
     }
 }

@@ -69,10 +69,10 @@ public class QueueCircular {
         q.add(3);
         q.add(4);
         q.add(5);
-        // System.out.println(q.dequeue());
+        System.out.println(q.dequeue());
         q.dequeue();
         q.add(6);
-        // System.out.println(q.dequeue());
+        System.out.println(q.dequeue());
         q.dequeue();
         q.add(7);
 
