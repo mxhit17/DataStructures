@@ -55,15 +55,30 @@ public class GraphProblems {
 
 
         // Graph for Topological Sort - DFS
-        graph[2].add(new Edge(2, 3, 0));
+        // graph[2].add(new Edge(2, 3, 0));
 
-        graph[3].add(new Edge(3, 1, 0));
+        // graph[3].add(new Edge(3, 1, 0));
 
-        graph[4].add(new Edge(4, 0, 0));
-        graph[4].add(new Edge(4, 1, 0));
+        // graph[4].add(new Edge(4, 0, 0));
+        // graph[4].add(new Edge(4, 1, 0));
 
-        graph[5].add(new Edge(5, 0, 0));
-        graph[5].add(new Edge(5, 2, 0));
+        // graph[5].add(new Edge(5, 0, 0));
+        // graph[5].add(new Edge(5, 2, 0));
+
+
+        // Graph for Dijkstra's Algorithm
+        graph[0].add(new Edge(0, 1, 2));
+        graph[0].add(new Edge(0, 2, 4));
+
+        graph[1].add(new Edge(1, 3, 7));
+        graph[1].add(new Edge(1, 2, 1));
+
+        graph[2].add(new Edge(2, 4, 3));
+
+        graph[3].add(new Edge(3, 5, 1));
+
+        graph[4].add(new Edge(4, 3, 2));
+        graph[4].add(new Edge(4, 5, 5));
     }
 
     public static void bfsUtil(ArrayList<Edge>[] graph, boolean vis[]){
@@ -273,8 +288,110 @@ public class GraphProblems {
         }
     }
 
+    public static void calcIndegree(ArrayList<Edge> graph[], int curr, int indegree[]){
+        for(int i = 0; i < graph[curr].size(); i++){
+            Edge e = graph[curr].get(i);
+            int idx = e.dest;
+            indegree[idx]++;
+        }
+    }
+
+    public static void topologicalSortBFS(ArrayList<Edge> graph[]){
+        int indegree[] = new int[graph.length];
+        Queue<Integer> q = new LinkedList<>();
+
+        for(int i = 0; i < graph.length; i++){
+            calcIndegree(graph, i, indegree);
+        }
+
+        for(int i = 0; i < indegree.length; i++){
+            if(indegree[i] == 0){
+                q.add(i);
+            }
+        }
+
+        // bfs
+        while (!q.isEmpty()) {
+            int curr = q.remove();
+            System.out.print(curr + " ");
+            for(int i = 0; i < graph[curr].size(); i++){
+                Edge e = graph[curr].get(i);
+                indegree[e.dest]--;
+                if(indegree[e.dest] == 0){
+                    q.add(e.dest);
+                }
+            }
+        }
+
+        System.out.println();
+    }
+
+    public static void allPaths(ArrayList<Edge> graph[], int src, int dest, String path){
+        if(src == dest){
+            System.out.println(path + dest);
+            return;
+        }
+        for(int i = 0; i < graph[src].size(); i++){
+            Edge e = graph[src].get(i);
+            allPaths(graph, e.dest, dest, path + src);
+        }
+    }
+
+    static class Pair implements Comparable<Pair>{
+        int n;
+        int path;
+        
+        public Pair(int n, int path){
+            this.n = n;
+            this.path = path;
+        }
+
+        @Override
+        public int compareTo(Pair p2){
+            return this.path - p2.path;
+        }        
+    }
+
+    public static void dijkstra(ArrayList<Edge> graph[], int src){
+        boolean vis[] = new boolean[graph.length];
+        // Initialize Distance
+        int dist[] = new int[graph.length];
+        for(int i = 0; i < graph.length; i++) {
+            if(i == src) {
+                dist[i] = 0;
+            } else {
+                dist[i] = Integer.MAX_VALUE;
+            }
+        }
+
+        // Make PQ
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        pq.add(new Pair(src, 0));
+
+        // work
+        while (!pq.isEmpty()) {
+            Pair curr = pq.remove();
+            if(!vis[curr.n]) {
+                vis[curr.n] = true;
+
+                for(int i = 0; i < graph[curr.n].size(); i++) {
+                    Edge e = graph[curr.n].get(i);
+                    if(dist[curr.n] + e.wt < dist[e.dest]) {
+                        dist[e.dest] = dist[curr.n] + e.wt;
+                        pq.add(new Pair(e.dest, dist[e.dest]));
+                    } 
+                }
+            }
+        }
+
+        for(int i = 0; i < dist.length; i++) {
+            System.out.print(dist[i] + " ");
+        }
+
+    }
+
     public static void main(String[] args) {
-        int V = 7;
+        int V = 6;
         ArrayList<Edge>[] graph = new ArrayList[V]; // null -> empty ArrayList
         createGraph(graph);
 
@@ -305,8 +422,18 @@ public class GraphProblems {
 
         // Topological Sorting - using DFS
         // topologicalSortDFS(graph);
+
+
+        // Topological Sorting - using BFS / Kahn's Algorithm
+        // topologicalSortBFS(graph);
+
         
+        // All Paths from Source to Target
+        // allPaths(graph, 5, 1, "");
 
 
+        // Dijkstra's Algorithm
+        // int src = 0;
+        // dijkstra(graph, src);
     }
 }
