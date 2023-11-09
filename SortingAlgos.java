@@ -1,4 +1,10 @@
-public class xTrail {
+public class SortingAlgos {
+    public static void printAry(int ary[]){
+        for(int i = 0; i < ary.length; i++){
+            System.out.print(ary[i] + " ");
+        }
+        System.out.println();
+    }
 
     public static void bubbleSort(int ary[]){
         for(int i = 0; i < ary.length; i++){
@@ -12,11 +18,11 @@ public class xTrail {
         }
     }
 
+    
     public static void main(String[] args) {
-        int ary[] = {6, 0, 3, 5};
-        bubbleSort(ary);
-        for(int i = 0; i < ary.length; i++){
-            System.out.print(ary[i] + " ");
-        }
+        // Bubble Sort
+        // int ary[] = {6, 0, 3, 5};
+        // bubbleSort(ary);
+        // printAry(ary);
     }
 }
