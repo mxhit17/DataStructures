@@ -67,18 +67,46 @@ public class GraphProblems {
 
 
         // Graph for Dijkstra's Algorithm
-        graph[0].add(new Edge(0, 1, 2));
-        graph[0].add(new Edge(0, 2, 4));
+        // graph[0].add(new Edge(0, 1, 2));
+        // graph[0].add(new Edge(0, 2, 4));
 
-        graph[1].add(new Edge(1, 3, 7));
-        graph[1].add(new Edge(1, 2, 1));
+        // graph[1].add(new Edge(1, 3, 7));
+        // graph[1].add(new Edge(1, 2, 1));
 
-        graph[2].add(new Edge(2, 4, 3));
+        // graph[2].add(new Edge(2, 4, 3));
 
-        graph[3].add(new Edge(3, 5, 1));
+        // graph[3].add(new Edge(3, 5, 1));
 
-        graph[4].add(new Edge(4, 3, 2));
-        graph[4].add(new Edge(4, 5, 5));
+        // graph[4].add(new Edge(4, 3, 2));
+        // graph[4].add(new Edge(4, 5, 5));
+
+
+        // Graph for Bellman Ford Algorithm
+        // graph[0].add(new Edge(0, 1, 2));
+        // graph[0].add(new Edge(0, 2, 4));
+
+        // graph[1].add(new Edge(1, 2, -4));
+
+        // graph[2].add(new Edge(2, 3, 2));
+
+        // graph[3].add(new Edge(3, 4, 4));
+
+        // graph[4].add(new Edge(4, 1, -1));
+
+
+        // Graph for Prim's Algorithm
+        graph[0].add(new Edge(0, 1, 10));
+        graph[0].add(new Edge(0, 2, 15));
+        graph[0].add(new Edge(0, 3, 30));
+
+        graph[1].add(new Edge(1, 0, 10));
+        graph[1].add(new Edge(1, 3, 40));
+
+        graph[2].add(new Edge(2, 0, 15));
+        graph[2].add(new Edge(2, 3, 50));
+
+        graph[3].add(new Edge(3, 1, 40));
+        graph[3].add(new Edge(3, 2, 50));
     }
 
     public static void bfsUtil(ArrayList<Edge>[] graph, boolean vis[]){
@@ -387,11 +415,79 @@ public class GraphProblems {
         for(int i = 0; i < dist.length; i++) {
             System.out.print(dist[i] + " ");
         }
-
     }
 
+    public static void bellmanFord(ArrayList<Edge> graph[], int src){
+        int dist[] = new int[graph.length];
+        for(int i = 0; i < dist.length; i++){
+            if(i == src){
+                dist[i] = 0;
+            }else{
+                dist[i] = Integer.MAX_VALUE;
+            }
+        }
+
+        int V = graph.length;
+
+        // O(V*E)
+        // algo - O(V)
+        for(int i = 0; i < V - 1; i++){
+            // edges - O(E)
+            for(int j = 0; j < V; j++){
+                for(int k = 0; k < graph[j].size(); k++){
+                    Edge e = graph[j].get(k);
+                    // relaxation step
+                    if(dist[e.src] != Integer.MAX_VALUE && dist[e.src] + e.wt < dist[e.dest]){
+                        dist[e.dest] = dist[e.src] + e.wt;
+                    }
+                }
+            }
+        }
+
+        for(int i = 0; i < dist.length; i++){
+            System.out.print(dist[i] + " ");
+        }
+        System.out.println();
+    }
+
+    static class PrimsPair implements Comparable<PrimsPair>{
+        int vertex;
+        int cost;
+
+        public PrimsPair(int vertex, int cost){
+            this.vertex = vertex;
+            this.cost = cost;
+        }
+        
+        @Override
+        public int compareTo(PrimsPair p2){
+            return this.cost - p2.cost;
+        }
+    }
+    public static void prims(ArrayList<Edge> graph[]){
+        boolean vis[] = new boolean[graph.length];
+        PriorityQueue<PrimsPair> pq = new PriorityQueue<>();
+
+        pq.add(new PrimsPair(0, 0));
+
+        int finalCost = 0;
+
+        while (!pq.isEmpty()) {
+            PrimsPair curr = pq.remove();
+            if(!vis[curr.vertex]){
+                vis[curr.vertex] = true;
+                finalCost += curr.cost;
+                for(int i = 0; i < graph[curr.vertex].size(); i++){
+                    Edge e = graph[curr.vertex].get(i);
+                    pq.add(new PrimsPair(e.dest, e.wt));
+                }
+            }
+        }
+
+        System.out.println("Final/Min cost of MST : " + finalCost);
+    }
     public static void main(String[] args) {
-        int V = 6;
+        int V = 4;
         ArrayList<Edge>[] graph = new ArrayList[V]; // null -> empty ArrayList
         createGraph(graph);
 
@@ -435,5 +531,14 @@ public class GraphProblems {
         // Dijkstra's Algorithm
         // int src = 0;
         // dijkstra(graph, src);
+
+
+        // Bellman Ford Algorithm
+        // int src = 0;
+        // bellmanFord(graph, src);
+
+
+        // Prim's Algorithm
+        // prims(graph);
     }
 }
