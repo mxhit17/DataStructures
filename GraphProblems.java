@@ -486,10 +486,74 @@ public class GraphProblems {
 
         System.out.println("Final/Min cost of MST : " + finalCost);
     }
+
+    public static void createGraph2(ArrayList<Edge>[] graph, int flights[][]){
+        for(int i = 0; i < graph.length; i++){
+            graph[i] = new ArrayList<>();
+        }
+
+        for(int i = 0; i < graph.length; i++){
+            int src = flights[i][0];
+            int dest = flights[i][1];
+            int wt = flights[i][2];
+
+            Edge e = new Edge(src, dest, wt);
+            graph[src].add(e);
+        }
+    }
+
+    static class Cpair implements Comparable<Cpair> {
+        int n;
+        int path;
+
+        public Cpair(int n, int path){
+            this.n = n;
+            this.path = path;
+        }
+
+        @Override
+        public int compareTo(Cpair p2){
+            return this.path - p2.path;
+        }
+    }
+
+    public static void cheapestFlight(ArrayList<Edge>[] graph, int src, int dest, int k){
+        // visited
+        boolean vis[] = new boolean[graph.length];
+
+        // cost initialization
+        int cost[] = new int[graph.length];
+        for(int i = 0; i < cost.length; i++){
+            if(i == src){
+                cost[i] = 0;
+            } else {
+                cost[i] = Integer.MAX_VALUE;
+            }
+        }
+
+        int count = 0;
+
+        PriorityQueue<Cpair> pq = new PriorityQueue<>();
+        pq.add(new Cpair(src, 0));
+        while (!pq.isEmpty() && count <= k) {
+            Cpair curr = pq.remove();
+            if(!vis[curr.n] ){
+                for(int i = 0; i < graph[curr.n].size(); i++){
+                    Edge e = graph[curr.n].get(i);
+                    if(cost[e.src] + e.wt < cost[curr.n]){
+                        cost[curr.n] = cost[e.src] + e.wt;
+                    }
+                    pq.add(new Cpair(e.dest, cost[e.dest]));
+                }
+            }
+        }
+
+        System.out.println(cost[dest]);
+    }
     public static void main(String[] args) {
-        int V = 4;
-        ArrayList<Edge>[] graph = new ArrayList[V]; // null -> empty ArrayList
-        createGraph(graph);
+        // int V = 4;
+        // ArrayList<Edge>[] graph = new ArrayList[V]; // null -> empty ArrayList
+        // createGraph(graph);
 
 
         // BFS
@@ -540,5 +604,16 @@ public class GraphProblems {
 
         // Prim's Algorithm
         // prims(graph);
+
+
+        // Cheapest Flights within K Stops
+        int n = 4;
+        int flights[][] = {{0, 1, 100}, {1, 2, 100}, {2, 0, 100}, {1, 3, 600}, {2, 3, 200}};
+        int src = 0, dest = 3, k = 1;
+
+        ArrayList<Edge> graph[] = new ArrayList[n];
+        createGraph2(graph, flights);
+
+        cheapestFlight(graph, src, dest, k);
     }
 }

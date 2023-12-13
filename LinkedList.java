@@ -448,6 +448,18 @@ public class LinkedList {
         }
 
     }
+
+    public void fun(Node head){
+        if(head == null){
+            return;
+        }
+        System.out.print(head.data + " ");
+
+        if(head.next != null){
+            fun(head.next.next);
+        }
+        System.out.print(head.data + " ");
+    }
     
     public static void main(String args[]){
         LinkedList ll = new LinkedList();
@@ -462,5 +474,6 @@ public class LinkedList {
         // ll.zigzag();
         // ll.reverse(head, 3);
         // ll.printLL();
+        ll.fun(head);
     }
 }
