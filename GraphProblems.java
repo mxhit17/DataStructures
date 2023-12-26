@@ -503,17 +503,19 @@ public class GraphProblems {
     }
 
     static class Cpair implements Comparable<Cpair> {
-        int n;
-        int path;
+        int v;
+        int cost;
+        int k;
 
-        public Cpair(int n, int path){
-            this.n = n;
-            this.path = path;
+        public Cpair(int v, int cost, int k){
+            this.v = v;
+            this.cost = cost;
+            this.k = k;
         }
 
         @Override
         public int compareTo(Cpair p2){
-            return this.path - p2.path;
+            return this.k - p2.k;
         }
     }
 
@@ -521,8 +523,10 @@ public class GraphProblems {
         // visited
         boolean vis[] = new boolean[graph.length];
 
-        // cost initialization
+        // cost
         int cost[] = new int[graph.length];
+
+        // distance initialization
         for(int i = 0; i < cost.length; i++){
             if(i == src){
                 cost[i] = 0;
@@ -531,24 +535,181 @@ public class GraphProblems {
             }
         }
 
-        int count = 0;
-
+        // Priority Queue
         PriorityQueue<Cpair> pq = new PriorityQueue<>();
-        pq.add(new Cpair(src, 0));
-        while (!pq.isEmpty() && count <= k) {
+        pq.add(new Cpair(src, 0, 0));
+
+        // loop
+        while (!pq.isEmpty()) {
             Cpair curr = pq.remove();
-            if(!vis[curr.n] ){
-                for(int i = 0; i < graph[curr.n].size(); i++){
-                    Edge e = graph[curr.n].get(i);
-                    if(cost[e.src] + e.wt < cost[curr.n]){
-                        cost[curr.n] = cost[e.src] + e.wt;
+            if(!vis[curr.v] && curr.k < k+1){
+                for(int i = 0; i < graph[curr.v].size(); i++){
+                    Edge e = graph[curr.v].get(i);
+                    // relaxation step
+                    if(cost[curr.v] + e.wt < cost[e.dest]){
+                        cost[e.dest] = cost[curr.v] + e.wt;
                     }
-                    pq.add(new Cpair(e.dest, cost[e.dest]));
+                    // add new pair to PQ
+                    pq.add(new Cpair(e.dest, cost[e.dest], curr.k + 1));
                 }
             }
         }
 
         System.out.println(cost[dest]);
+    }
+
+    static class EdgeC implements Comparable<EdgeC>{    // Edge Cities
+        int dest;
+        int cost;
+        
+        public EdgeC(int d, int c){
+            this.dest = d;
+            this.cost = c;
+        }
+
+        @Override
+
+        public int compareTo(EdgeC e2){
+            return this.cost - e2.cost;
+        }
+    }
+
+    public static int connectCities(int cities[][]){ // based on prim's algorithm
+        PriorityQueue<EdgeC> pq = new PriorityQueue<>();
+        boolean vis[] = new boolean[cities.length];
+
+        pq.add(new EdgeC(0, 0));
+        int finalCost = 0;
+
+        while (!pq.isEmpty()) {
+            EdgeC curr = pq.remove();
+            if(!vis[curr.dest]){
+                vis[curr.dest] = true;
+                finalCost += curr.cost;
+                for(int i = 0; i < cities[curr.dest].length; i++){
+                    if(cities[curr.dest][i] != 0){
+                        pq.add(new EdgeC(i, cities[curr.dest][i]));
+                    }
+                }
+            }
+        }
+
+        return finalCost;
+    }
+
+    static int n = 7;
+    static int par[] = new int[n];
+    static int rank[] = new int[n];
+    
+    public static void init(){
+        for(int i = 0; i < par.length; i++){
+            par[i] = i;
+        }
+    }
+
+    public static int find(int x){ // TC = O(1)
+        if(par[x] == x){
+            return x;
+        }
+
+        return par[x] = find(par[x]);
+    }
+
+    public static void union(int a, int b){ // TC = O(1)
+        int parA = find(a);
+        int parB = find(b);
+
+        if(rank[parA] == rank[parB]){
+            par[parB] = parA;
+            rank[parA]++;
+        } else if(rank[parA] > rank [parB]){
+            par[parB] = parA;
+        } else {
+            par[parA] = parB;
+        }
+    }
+
+    static class EdgeK implements Comparable<EdgeK>{
+        int src;
+        int dest;
+        int wt;
+
+        public EdgeK(int src, int dest, int wt){
+            this.src = src;
+            this.dest = dest;
+            this.wt = wt;
+        }
+
+        @Override
+
+        public int compareTo(EdgeK e2){
+            return this.wt - e2.wt;
+        }
+    }
+
+    public static void createGraphKruskal(ArrayList<EdgeK> edges){
+        edges.add(new EdgeK(0, 1, 10));
+        edges.add(new EdgeK(0, 2, 15));
+        edges.add(new EdgeK(0, 3, 30));
+        edges.add(new EdgeK(1, 3, 40));
+        edges.add(new EdgeK(2, 3, 50));
+    }
+
+    public static void kruskalMST(ArrayList<EdgeK> edges, int V){ // TC = O(V + ELogE)
+        init();
+        Collections.sort(edges); // TC = O(ELogE)
+
+        int mstCost = 0;
+        int count = 0;
+
+        for(int i = 0; count < V - 1; i++){ // TC = O(V)
+            EdgeK e = edges.get(i);
+            // src, dest, wt
+            if(find(e.src) == find(e.dest)){
+                continue;
+            } else {
+                union(e.src, e.dest);
+                mstCost += e.wt;
+                count++;
+            }
+        }
+
+        System.out.println("MST Cost : " + mstCost);
+    }
+
+    public static void helper(int image[][], int sr, int sc, int color, boolean vis[][], int orgCol){
+        // base case
+        if (sr < 0 || sc < 0 || sr > image.length - 1 || sc > image[0].length - 1) {
+            return;
+        }
+
+        if (vis[sr][sc] == true) {
+            return;
+        }
+
+        if (image[sr][sc] != orgCol) {
+            return;
+        }
+
+        vis[sr][sc] = true;
+        image[sr][sc] = color;
+
+        // up
+        helper(image, sr - 1, sc, color, vis, orgCol);
+        // left
+        helper(image, sr, sc - 1, color, vis, orgCol);
+        // down
+        helper(image, sr + 1, sc, color, vis, orgCol);
+        // right
+        helper(image, sr, sc + 1, color, vis, orgCol);
+
+        return;
+    }
+
+    public static int[][] floodFill(int[][] image, int sr, int sc, int color) {
+        boolean vis[][] = new boolean[image.length][image[0].length];
+        helper(image, sr, sc, color, vis, image[sr][sc]);
+        return image;
     }
     public static void main(String[] args) {
         // int V = 4;
@@ -607,13 +768,53 @@ public class GraphProblems {
 
 
         // Cheapest Flights within K Stops
-        int n = 4;
-        int flights[][] = {{0, 1, 100}, {1, 2, 100}, {2, 0, 100}, {1, 3, 600}, {2, 3, 200}};
-        int src = 0, dest = 3, k = 1;
+        // int n = 4;
+        // ArrayList<Edge> graph[] = new ArrayList[n];
+        // int flights[][] = {{0, 1, 100}, {1, 2, 100}, {2, 0, 100}, {1, 3, 600}, {2, 3, 200}};
+        // int src = 0, dest = 3, k = 1;
+        // createGraph2(graph, flights);
+        // cheapestFlight(graph, src, dest, k);
 
-        ArrayList<Edge> graph[] = new ArrayList[n];
-        createGraph2(graph, flights);
 
-        cheapestFlight(graph, src, dest, k);
+        // Connecting Cities with Minimum Cost
+        // int cities[][] = {{0, 1, 2, 3, 4},
+        //                   {1, 0, 5, 0, 7},
+        //                   {2, 5, 0, 6, 0},
+        //                   {3, 0, 6, 0, 0},
+        //                   {4, 7, 0, 0, 0}};
+        // System.out.println("Minimum cost to connect all the cities : " + connectCities(cities));
+
+
+        // Disjoint Set Union DS
+        // init();
+        // union(1, 3);
+        // System.out.println(find(3));
+        // union(2, 4);
+        // union(3, 6);
+        // union(1, 4);
+        // System.out.println(find(3));
+        // System.out.println(find(4));
+        // union(1, 5);
+
+
+        // Kruskal's Algorithm
+        // int V = 4;
+        // ArrayList<EdgeK> edges = new ArrayList<>();
+        // createGraphKruskal(edges);
+        // kruskalMST(edges, V);
+
+
+        // Flood Fill Algorithm
+        // int image[][] = {{1, 1, 1},
+        //                 {1, 1, 0},
+        //                 {1, 0, 1}};
+        // int sr = 1, sc = 1, color = 2;
+        // floodFill(image, sr, sc, color);
+        // for(int i = 0; i < image.length; i++){
+        //     for(int j = 0; j < image[0].length; j++){
+        //         System.out.print(image[i][j] + " ");
+        //     }
+        //     System.out.println();
+        // }
     }
 }
