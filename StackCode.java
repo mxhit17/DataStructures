@@ -88,7 +88,6 @@ public class StackCode {
         //Next greater left         Inverse the for loop (run it from 0 to ary.length)
         //Next smallest right       Inverse the while loop condition to {!s.isEmpty() && ary[s.peek()] <= ary[i]}
         //Next smallest left        Inverse the for loop (run it from 0 to ary.length), Inverse the while loop condition to {!s.isEmpty() && ary[s.peek()] <= ary[i]}
-
     }
 
     public static boolean validParentheses(String str){
