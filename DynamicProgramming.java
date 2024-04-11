@@ -245,6 +245,86 @@ public class DynamicProgramming {
 
         return dp[n][W];
     }
+
+    public static int coinChange(int coins[], int sum) {
+        int dp[][] = new int[coins.length + 1][sum + 1];
+
+        for (int i = 0; i < coins.length + 1; i++) {
+            dp[i][0] = 1;
+        }
+
+        for (int i = 1; i < sum + 1; i++) {
+            dp[0][i] = 0;
+        }
+
+        for (int i = 1; i < coins.length + 1; i++) {
+            for (int j = 1; j < sum + 1; j++) {
+                int c = coins[i - 1];
+
+                if (c <= j) { // Valid
+                    // Include
+                    int incProfit = dp[i][j - c];
+
+                    // Exclude
+                    int excProfit = dp[i - 1][j];
+                    dp[i][j] = incProfit + excProfit;
+                } else {
+                    int excProfit = dp[i - 1][j];
+                    dp[i][j] = excProfit;
+                }
+            }
+        }
+
+        return dp[coins.length][sum];
+    }
+
+    public static int rodCutting(int lengths[], int prices[], int rodLength) {
+        int n = lengths.length;
+        int W = rodLength;
+
+        int dp[][] = new int[n + 1][W + 1];
+
+        // for (int i = 0; i < W + 1; i++) {
+        //     dp[0][i] = 0;
+        // }
+
+        // for (int i = 0; i < n + 1; i++) {
+        //     dp[i][0] = 0;
+        // }
+
+        for (int i = 1; i < n + 1; i++) {
+            for (int j = 1; j < W + 1; j++) {
+                int p = prices[i - 1];
+                int l = lengths[i - 1];
+                
+                if (l <= j) { // Valid
+                    dp[i][j] = Math.max(p + dp[i][j - l], dp[i - 1][j]);
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+
+        return dp[n][W];
+    }
+
+
+    public static int lcs(String str1, String str2, int n, int m) {
+        if (n < 0 || m < 0) {
+            return 0;
+        }
+
+        char ch1 = str1.charAt(n);
+        char ch2 = str2.charAt(m);
+
+        if (ch1 == ch2) {
+            return lcs(str1, str2, n - 1, m - 1) + 1;
+        } else {
+            int a = lcs(str1, str2, n - 1, m);
+            int b = lcs(str1, str2, n, m - 1);
+            return Math.max(a, b);
+        }
+    }
     public static void main(String[] args) {
         // Fibonacci Series
         // int n = 5;
@@ -296,5 +376,24 @@ public class DynamicProgramming {
         // int wt[] = {2, 5, 1, 3, 4};
         // int W = 7;
         // System.out.println(unBoundedKsTab(val, wt, W));
+
+
+        // Coin Change
+        // int[] coins = {2, 5, 3, 6};
+        // int sum = 10;
+        // System.out.println(coinChange(coins, sum));
+
+
+        // Rod Cutting
+        // int lengths[] = {1, 2, 3, 4, 5, 6, 7, 8};
+        // int prices[] = {1, 5, 8, 9, 10, 17, 17, 20};
+        // int rodLength = 8;
+        // System.out.println(rodCutting(lengths, prices, rodLength));
+
+
+        // Longest Common Subsequence
+        // String str1 = "abcde";
+        // String str2 = "ace";
+        // System.out.println(lcs(str1, str2, str1.length() - 1, str2.length() - 1));
     }
 }
